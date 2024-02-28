@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func generateToken(apiKey string, expSeconds int64) (string, error) {
+func GenerateToken(apiKey string, expSeconds int64) (string, error) {
 	// 分割 API key
 	parts := strings.Split(apiKey, ".")
 	if len(parts) != 2 {

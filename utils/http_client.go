@@ -10,7 +10,7 @@ import (
 )
 
 // post函数用于发送HTTP POST请求并获取响应结果
-func post(apiURL, token string, params interface{}, timeout time.Duration) (map[string]interface{}, error) {
+func Post(apiURL, token string, params interface{}, timeout time.Duration) (map[string]interface{}, error) {
 
 	// 将请求参数转换为 JSON 格式
 	jsonParams, err := json.Marshal(params)
@@ -61,7 +61,7 @@ func post(apiURL, token string, params interface{}, timeout time.Duration) (map[
 	return response, nil
 }
 
-func stream(apiURL, token string, params interface{}, timeout time.Duration) (*http.Response, error) {
+func Stream(apiURL, token string, params interface{}, timeout time.Duration) (*http.Response, error) {
 	// 将请求参数转换为 JSON 格式
 	jsonParams, err := json.Marshal(params)
 	if err != nil {
@@ -96,7 +96,7 @@ func stream(apiURL, token string, params interface{}, timeout time.Duration) (*h
 	return resp, nil
 }
 
-func get(apiURL, token string, timeout time.Duration) (map[string]interface{}, error) {
+func Get(apiURL, token string, timeout time.Duration) (map[string]interface{}, error) {
 	// 创建一个具有指定超时时间的 HTTP 客户端
 	client := http.Client{Timeout: timeout}
 

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/textproto"
 	"time"
+
+	"github.com/itcwc/go-zhipu/utils"
 )
 
 var v4url string = "https://open.bigmodel.cn/api/paas/v4/"
@@ -20,9 +22,9 @@ type Messages struct {
 }
 
 // 通用模型
-func BeCommonModel(expireAtTime int64, mssage []Messages, apiKey string, model string) {
+func BeCommonModel(expireAtTime int64, mssage []Messages, apiKey string, model string) (map[string]interface{}, error) {
 
-	token, _ := utils.generateToken(apiKey, expireAtTime)
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
 	// 示例用法
 	apiURL := v4url + "chat/completions"
@@ -34,12 +36,11 @@ func BeCommonModel(expireAtTime int64, mssage []Messages, apiKey string, model s
 		Messages: mssage,
 	}
 
-	postResponse, err := utils.post(apiURL, token, postParams, timeout)
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
-		fmt.Println("请求错误:", err)
-		return
+		return nil, fmt.Errorf("创建请求失败: %v", err)
 	}
-	fmt.Println("请求成功:", postResponse)
+	return postResponse, nil
 }
 
 type PostImageParams struct {
@@ -48,9 +49,9 @@ type PostImageParams struct {
 }
 
 // 图像大模型
-func ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model string) {
+func ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model string) (map[string]interface{}, error) {
 
-	token, _ := utils.generateToken(apiKey, expireAtTime)
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
 	// 示例用法
 	apiURL := v4url + "images/generations"
@@ -62,12 +63,11 @@ func ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model str
 		Prompt: prompt,
 	}
 
-	postResponse, err := utils.post(apiURL, token, postParams, timeout)
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
-		fmt.Println("请求错误:", err)
-		return
+		return nil, fmt.Errorf("创建请求失败: %v", err)
 	}
-	fmt.Println("请求成功:", postResponse)
+	return postResponse, nil
 }
 
 type PostSuperhumanoidParams struct {
@@ -86,9 +86,9 @@ type Meta struct {
 }
 
 // 超拟人大模型
-func SuperhumanoidModel(expireAtTime int64, meta []Meta, prompt []Prompt, apiKey string) {
+func SuperhumanoidModel(expireAtTime int64, meta []Meta, prompt []Prompt, apiKey string) (map[string]interface{}, error) {
 
-	token, _ := utils.generateToken(apiKey, expireAtTime)
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
 	// 示例用法
 	apiURL := v3url + "model-api/charglm-3/sse-invoke"
@@ -100,12 +100,11 @@ func SuperhumanoidModel(expireAtTime int64, meta []Meta, prompt []Prompt, apiKey
 		Meta:   meta,
 	}
 
-	postResponse, err := utils.post(apiURL, token, postParams, timeout)
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
-		fmt.Println("请求错误:", err)
-		return
+		return nil, fmt.Errorf("创建请求失败: %v", err)
 	}
-	fmt.Println("请求成功:", postResponse)
+	return postResponse, nil
 }
 
 type PostVectorParams struct {
@@ -114,9 +113,9 @@ type PostVectorParams struct {
 }
 
 // 向量模型
-func VectorModel(expireAtTime int64, input string, apiKey string, model string) {
+func VectorModel(expireAtTime int64, input string, apiKey string, model string) (map[string]interface{}, error) {
 
-	token, _ := utils.generateToken(apiKey, expireAtTime)
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
 	// 示例用法
 	apiURL := v4url + "mbeddings"
@@ -128,12 +127,11 @@ func VectorModel(expireAtTime int64, input string, apiKey string, model string) 
 		Model: model,
 	}
 
-	postResponse, err := utils.post(apiURL, token, postParams, timeout)
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
-		fmt.Println("请求错误:", err)
-		return
+		return nil, fmt.Errorf("创建请求失败: %v", err)
 	}
-	fmt.Println("请求成功:", postResponse)
+	return postResponse, nil
 }
 
 type PostFineTuningParams struct {
@@ -142,9 +140,9 @@ type PostFineTuningParams struct {
 }
 
 // 模型微调
-func ModelFineTuning(expireAtTime int64, trainingFile string, apiKey string, model string) {
+func ModelFineTuning(expireAtTime int64, trainingFile string, apiKey string, model string) (map[string]interface{}, error) {
 
-	token, _ := utils.generateToken(apiKey, expireAtTime)
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
 	// 示例用法
 	apiURL := v4url + "fine_tuning/jobs"
@@ -156,12 +154,11 @@ func ModelFineTuning(expireAtTime int64, trainingFile string, apiKey string, mod
 		TrainingFile: trainingFile,
 	}
 
-	postResponse, err := utils.post(apiURL, token, postParams, timeout)
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
-		fmt.Println("请求错误:", err)
-		return
+		return nil, fmt.Errorf("创建请求失败: %v", err)
 	}
-	fmt.Println("请求成功:", postResponse)
+	return postResponse, nil
 }
 
 type PostFileParams struct {
@@ -181,9 +178,9 @@ type FileHeader struct {
 }
 
 // 文件管理
-func FileManagement(expireAtTime int64, purpose string, apiKey string, model string, file *FileHeader) {
+func FileManagement(expireAtTime int64, purpose string, apiKey string, model string, file *FileHeader) (map[string]interface{}, error) {
 
-	token, _ := utils.generateToken(apiKey, expireAtTime)
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
 	// 示例用法
 	apiURL := v4url + "files"
@@ -195,10 +192,9 @@ func FileManagement(expireAtTime int64, purpose string, apiKey string, model str
 		Purpose: purpose,
 	}
 
-	postResponse, err := utils.post(apiURL, token, postParams, timeout)
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
-		fmt.Println("请求错误:", err)
-		return
+		return nil, fmt.Errorf("创建请求失败: %v", err)
 	}
-	fmt.Println("请求成功:", postResponse)
+	return postResponse, nil
 }
