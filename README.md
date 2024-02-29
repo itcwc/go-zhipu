@@ -1,5 +1,7 @@
 # go-zhipu
+* 当前未完成，待续...
 
+***
 ## 前言
   * go智谱清言api
   * 详情见官方文档：https://maas.aminer.cn/dev/api

@@ -28,7 +28,7 @@ func BeCommonModel(expireAtTime int64, mssage []Messages, apiKey string, model s
 
 	// 示例用法
 	apiURL := v4url + "chat/completions"
-	timeout := 10 * time.Second
+	timeout := 60 * time.Second
 
 	// 示例 POST 请求
 	postParams := PostParams{
@@ -55,7 +55,7 @@ func ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model str
 
 	// 示例用法
 	apiURL := v4url + "images/generations"
-	timeout := 10 * time.Second
+	timeout := 60 * time.Second
 
 	// 示例 POST 请求
 	postParams := PostImageParams{
@@ -92,7 +92,7 @@ func SuperhumanoidModel(expireAtTime int64, meta []Meta, prompt []Prompt, apiKey
 
 	// 示例用法
 	apiURL := v3url + "model-api/charglm-3/sse-invoke"
-	timeout := 10 * time.Second
+	timeout := 60 * time.Second
 
 	// 示例 POST 请求
 	postParams := PostSuperhumanoidParams{
@@ -119,7 +119,7 @@ func VectorModel(expireAtTime int64, input string, apiKey string, model string) 
 
 	// 示例用法
 	apiURL := v4url + "mbeddings"
-	timeout := 10 * time.Second
+	timeout := 60 * time.Second
 
 	// 示例 POST 请求
 	postParams := PostVectorParams{
@@ -146,7 +146,7 @@ func ModelFineTuning(expireAtTime int64, trainingFile string, apiKey string, mod
 
 	// 示例用法
 	apiURL := v4url + "fine_tuning/jobs"
-	timeout := 10 * time.Second
+	timeout := 60 * time.Second
 
 	// 示例 POST 请求
 	postParams := PostFineTuningParams{
@@ -184,7 +184,7 @@ func FileManagement(expireAtTime int64, purpose string, apiKey string, model str
 
 	// 示例用法
 	apiURL := v4url + "files"
-	timeout := 10 * time.Second
+	timeout := 60 * time.Second
 
 	// 示例 POST 请求
 	postParams := PostFileParams{
