@@ -15,6 +15,7 @@ var v3url string = "https://open.bigmodel.cn/api/paas/v3/"
 type PostParams struct {
 	Model    string     `json:"model"`
 	Messages []Messages `json:"messages"`
+	Stream   *bool      `json:"stream"`
 }
 type Messages struct {
 	Role    string `json:"role"`
@@ -22,19 +23,13 @@ type Messages struct {
 }
 
 // 通用模型
-func BeCommonModel(expireAtTime int64, mssage []Messages, apiKey string, model string) (map[string]interface{}, error) {
+func BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string) (map[string]interface{}, error) {
 
 	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
 	// 示例用法
 	apiURL := v4url + "chat/completions"
 	timeout := 60 * time.Second
-
-	// 示例 POST 请求
-	postParams := PostParams{
-		Model:    model,
-		Messages: mssage,
-	}
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
