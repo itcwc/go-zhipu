@@ -49,7 +49,6 @@ func Post(apiURL, token string, params interface{}, timeout time.Duration) (map[
 		// 解析响应结果
 		var response map[string]interface{}
 		err = json.Unmarshal(body, &response)
-		fmt.Println(string(body))
 		if err != nil {
 			return nil, fmt.Errorf("解码响应失败: %v", err)
 		}
