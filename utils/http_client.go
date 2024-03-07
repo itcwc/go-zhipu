@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-// post函数用于发送HTTP POST请求并获取响应结果
+// Post 发送HTTP POST请求并获取响应结果
 func Post(apiURL, token string, params interface{}, timeout time.Duration) (map[string]interface{}, error) {
 
 	// 将请求参数转换为 JSON 格式
@@ -18,7 +18,6 @@ func Post(apiURL, token string, params interface{}, timeout time.Duration) (map[
 	if err != nil {
 		return nil, fmt.Errorf("编码请求参数失败: %v", err)
 	}
-
 	// 创建请求
 	res, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(jsonParams))
 	if err != nil {
