@@ -15,7 +15,7 @@ var v3url string = "https://open.bigmodel.cn/api/paas/v3/"
 type PostParams struct {
 	Model    string     `json:"model"`
 	Messages []Messages `json:"messages"`
-	Stream   *bool      `json:"stream"`
+	Stream   bool       `json:"stream"`
 }
 type Messages struct {
 	Role    string `json:"role"`
