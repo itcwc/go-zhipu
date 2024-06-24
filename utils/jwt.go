@@ -35,7 +35,7 @@ func GenerateToken(apiKey string, expSeconds int64) (string, error) {
 	token.Header = header
 	signedToken, err := token.SignedString([]byte(secret))
 	if err != nil {
-		return "", fmt.Errorf("failed to generate token: %v", err)
+		return "", fmt.Errorf("令牌生成失败: %v", err)
 	}
 
 	return signedToken, nil

@@ -2,7 +2,7 @@ package model_api
 
 import (
 	"fmt"
-	"net/textproto"
+	"mime/multipart"
 	"time"
 
 	"github.com/itcwc/go-zhipu/utils"
@@ -13,13 +13,62 @@ var v4url string = "https://open.bigmodel.cn/api/paas/v4/"
 var v3url string = "https://open.bigmodel.cn/api/paas/v3/"
 
 type PostParams struct {
-	Model    string     `json:"model"`
-	Messages []Messages `json:"messages"`
-	Stream   bool       `json:"stream"`
+	Model       string      `json:"model"`
+	Messages    []Message   `json:"messages"`
+	RequestId   string      `json:"request_id"`
+	DoSample    bool        `json:"do_sample"`
+	Stream      bool        `json:"stream"`
+	Temperature float64     `json:"temperature"`
+	TopP        float64     `json:"top_p"`
+	Maxtokens   int         `json:"max_tokens"`
+	Stop        interface{} `json:"stop"`
+	Tools       Tool        `json:"tools"`
+	ToolChoice  string      `json:"tool_choice"`
+	UserId      string      `json:"user_id"`
 }
-type Messages struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+type Message struct {
+	Role       string    `json:"role"`
+	Content    string    `json:"content"`
+	ToolCalls  ToolCalls `json:"tool_calls"`
+	ToolCallId string    `json:"tool_call_id"`
+}
+
+type Tool struct {
+	Type      string       `json:"type"`
+	Function  ToolFunction `json:"function"`
+	Retrieval Retrieval    `json:"retrieval"`
+	WebSearch WebSearch    `json:"web_search"`
+}
+
+type ToolFunction struct {
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Parameters  Parameter `json:"parameters"`
+}
+
+type Parameter struct {
+	Location string `json:"location"`
+	Unit     string `json:"unit"`
+}
+type Retrieval struct {
+	KnowledgeId    string `json:"knowledge_id"`
+	PromptTemplate string `json:"prompt_template"`
+}
+type WebSearch struct {
+	Enable       string `json:"enable"`
+	SearchQuery  string `json:"search_query"`
+	SearchResult bool   `json:"search_result"`
+}
+
+type ToolCalls struct {
+	Id       string           `json:"id"`
+	Type     string           `json:"type"`
+	Function ToolCallFunction `json:"function"`
+}
+
+type ToolCallFunction struct {
+	Name      string `json:"name"`
+	Arguments string `json:"arguments"`
 }
 
 // 通用模型
@@ -31,6 +80,8 @@ func BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string) (ma
 	apiURL := v4url + "chat/completions"
 	timeout := 60 * time.Second
 
+	postParams.Stream = false
+
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
 		return nil, fmt.Errorf("创建请求失败: %v", err)
@@ -41,10 +92,11 @@ func BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string) (ma
 type PostImageParams struct {
 	Model  string `json:"model"`
 	Prompt string `json:"prompt"`
+	UserId string `json:"user_id"`
 }
 
 // 图像大模型
-func ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model string) (map[string]interface{}, error) {
+func ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model string, userId string) (map[string]interface{}, error) {
 
 	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
@@ -56,6 +108,7 @@ func ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model str
 	postParams := PostImageParams{
 		Model:  model,
 		Prompt: prompt,
+		UserId: userId,
 	}
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
@@ -66,12 +119,17 @@ func ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model str
 }
 
 type PostSuperhumanoidParams struct {
-	Prompt []Prompt `json:"prompt"`
-	Meta   []Meta   `json:"meta"`
-}
-type Prompt struct {
-	Role    string `json:"prompt"`
-	Content string `json:"content"`
+	Model       string      `json:"model"`
+	Messages    []Message   `json:"messages"`
+	Meta        []Meta      `json:"meta"`
+	RequestId   string      `json:"request_id"`
+	DoSample    bool        `json:"do_sample"`
+	Stream      bool        `json:"stream"`
+	Temperature float64     `json:"temperature"`
+	TopP        float64     `json:"top_p"`
+	Maxtokens   int         `json:"max_tokens"`
+	Stop        interface{} `json:"stop"`
+	UserId      string      `json:"user_id"`
 }
 type Meta struct {
 	UserInfo string `json:"user_info"`
@@ -81,7 +139,7 @@ type Meta struct {
 }
 
 // 超拟人大模型
-func SuperhumanoidModel(expireAtTime int64, meta []Meta, prompt []Prompt, apiKey string) (map[string]interface{}, error) {
+func SuperhumanoidModel(expireAtTime int64, postParams PostSuperhumanoidParams, apiKey string) (map[string]interface{}, error) {
 
 	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
@@ -90,11 +148,6 @@ func SuperhumanoidModel(expireAtTime int64, meta []Meta, prompt []Prompt, apiKey
 	timeout := 60 * time.Second
 
 	// 示例 POST 请求
-	postParams := PostSuperhumanoidParams{
-		Prompt: prompt,
-		Meta:   meta,
-	}
-
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
 		return nil, fmt.Errorf("创建请求失败: %v", err)
@@ -129,25 +182,22 @@ func VectorModel(expireAtTime int64, input string, apiKey string, model string) 
 	return postResponse, nil
 }
 
-type PostFineTuningParams struct {
-	Model        string `json:"model"`
-	TrainingFile string `json:"training_file"`
+type PostBatchParams struct {
+	InputFileId      []string    `json:"input_file_id"`
+	Endpoint         string      `json:"endpoint"`
+	CompletionWindow string      `json:"completion_window"`
+	Metadata         interface{} `json:"metadata"`
 }
 
-// 模型微调
-func ModelFineTuning(expireAtTime int64, trainingFile string, apiKey string, model string) (map[string]interface{}, error) {
-
+// Batch API
+func BatchAPI(expireAtTime int64, postParams PostBatchParams, apiKey string) (map[string]interface{}, error) {
 	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
 	// 示例用法
-	apiURL := v4url + "fine_tuning/jobs"
+	apiURL := v4url + "batches"
 	timeout := 60 * time.Second
 
 	// 示例 POST 请求
-	postParams := PostFineTuningParams{
-		Model:        model,
-		TrainingFile: trainingFile,
-	}
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -156,24 +206,70 @@ func ModelFineTuning(expireAtTime int64, trainingFile string, apiKey string, mod
 	return postResponse, nil
 }
 
-type PostFileParams struct {
-	File    *FileHeader `json:"file"`
-	Purpose string      `json:"purpose"`
+type PostFineTuningParams struct {
+	Model           string         `json:"model"`
+	TrainingFile    string         `json:"training_file"`
+	ValidationFile  string         `json:"validation_file"`
+	Hyperparameters Hyperparameter `json:"hyperparameters"`
+	Suffix          string         `json:"suffix"`
+	RequestId       string         `json:"request_id"`
 }
 
-type FileHeader struct {
-	Filename string
-	Header   textproto.MIMEHeader
-	Size     int64
+type Hyperparameter struct {
+	LearningRateMultiplier string `json:"learning_rate_multiplier"`
+	BatchSize              int    `json:"batch_size"`
+	NEpochs                int    `json:"n_epochs"`
+}
 
-	content   []byte
-	tmpfile   string
-	tmpoff    int64
-	tmpshared bool
+// 模型微调
+func ModelFineTuning(expireAtTime int64, postParams PostFineTuningParams, apiKey string) (map[string]interface{}, error) {
+
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+
+	// 示例用法
+	apiURL := v4url + "fine_tuning/jobs"
+	timeout := 60 * time.Second
+
+	// 示例 POST 请求
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
+	if err != nil {
+		return nil, fmt.Errorf("创建请求失败: %v", err)
+	}
+	return postResponse, nil
+}
+
+type PostKnowledgeParams struct {
+	EmbeddingId int    `json:"embedding_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+// 知识库管理
+func Knowledge(expireAtTime int64, postParams PostKnowledgeParams, apiKey string, model string) (map[string]interface{}, error) {
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+
+	// 示例用法
+	apiURL := v4url + "knowledge"
+	timeout := 60 * time.Second
+
+	// 示例 POST 请求
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
+	if err != nil {
+		return nil, fmt.Errorf("创建请求失败: %v", err)
+	}
+	return postResponse, nil
+}
+
+type PostFileParams struct {
+	File            *multipart.FileHeader `json:"file"`
+	Purpose         string                `json:"purpose"`
+	CustomSeparator interface{}           `json:"custom_separator"`
+	SentenceSize    int                   `json:"sentence_size"`
+	KnowledgeId     string                `json:"knowledge_id"`
 }
 
 // 文件管理
-func FileManagement(expireAtTime int64, purpose string, apiKey string, model string, file *FileHeader) (map[string]interface{}, error) {
+func FileManagement(expireAtTime int64, postParams PostFileParams, apiKey string, model string) (map[string]interface{}, error) {
 
 	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
@@ -182,11 +278,6 @@ func FileManagement(expireAtTime int64, purpose string, apiKey string, model str
 	timeout := 60 * time.Second
 
 	// 示例 POST 请求
-	postParams := PostFileParams{
-		File:    file,
-		Purpose: purpose,
-	}
-
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
 		return nil, fmt.Errorf("创建请求失败: %v", err)

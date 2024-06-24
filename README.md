@@ -15,6 +15,7 @@
   * 图像大模型
   * 超拟人大模型
   * 向量模型
+  * Batch API
   * 模型微调
   * 文件管理
     * 文件上传
@@ -37,26 +38,34 @@
 ## 示例
 
 ```go
-  import "github.com/itcwc/go-zhipu/model_api"
+package examples
 
-  ...
+import (
+	"fmt"
 
-	expireAtTime := int64(1640995200) // token 过期时间
-	mssage := []model_api.Messages{
-		{
-			Role:    "user",    // 消息的角色信息 详见文档
-			Content: "content", // 消息内容
+	itcwc "github.com/itcwc/go-zhipu/model_api"
+)
+
+func example() {
+	expireAtTime := int64(1719803252) // token 过期时间
+	mssage := itcwc.PostParams{
+		Model: "glm-3-turbo",
+		Message: []itcwc.Messages{
+			{
+				Role:    "user",    // 消息的角色信息 详见文档
+				Content: "content", // 消息内容
+			},
 		},
 	}
 	apiKey := "your api key"
-	model := "glm-3-turbo"
 
-	postResponse, err := model_api.BeCommonModel(expireAtTime, mssage, apiKey, model)
+	postResponse, err := itcwc.BeCommonModel(expireAtTime, mssage, apiKey)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Println(postResponse)
+}
 ```
 
 ***
@@ -64,7 +73,7 @@
 ## 其他
   * 通用模型
     ```go
-      go-zhipu.model_api.BeCommonModel(expireAtTime int64, mssage []Messages, apiKey string, model string)
+      go-zhipu.model_api.BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string)
     ```
   * 图像大模型
     ```go
@@ -72,17 +81,26 @@
     ```
   * 超拟人大模型
     ```go
-      go-zhipu.model_api.SuperhumanoidModel(expireAtTime int64, meta []Meta, prompt []Prompt, apiKey string)
+      go-zhipu.model_api.SuperhumanoidModel(expireAtTime int64, postParams PostSuperhumanoidParams, apiKey string)
     ```
   * 向量模型
     ```go
       go-zhipu.model_api.VectorModel(expireAtTime int64, input string, apiKey string, model string)
     ```
+  * Batch API
+    ```go
+      go-zhipu.model_api.BatchAPI(expireAtTime int64, postParams PostBatchParams, apiKey string)
+    ```
   * 模型微调
     ```go
       go-zhipu.model_api.ModelFineTuning(expireAtTime int64, trainingFile string, apiKey string, model string)
     ```
-  * 文件管理
-    ```go
-      go-zhipu.model_api.FileManagement(expireAtTime int64, purpose string, apiKey string, model string, file *FileHeader)
-    ```
+  * 知识管理
+    * 知识库管理
+      ```go
+        go-zhipu.model_api.Knowledge(expireAtTime int64, postParams PostKnowledgeParams, apiKey string, model string)
+      ```
+    * 文件管理
+      ```go
+        go-zhipu.model_api.FileManagement(expireAtTime int64, purpose string, apiKey string, model string, file *FileHeader)
+      ```
