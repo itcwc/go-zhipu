@@ -183,7 +183,7 @@ func VectorModel(expireAtTime int64, input string, apiKey string, model string) 
 }
 
 type PostBatchParams struct {
-	InputFileId      []string    `json:"input_file_id"`
+	InputFileId      string      `json:"input_file_id"`
 	Endpoint         string      `json:"endpoint"`
 	CompletionWindow string      `json:"completion_window"`
 	Metadata         interface{} `json:"metadata"`
