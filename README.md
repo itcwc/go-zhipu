@@ -1,5 +1,5 @@
 # go-zhipu
-* 当前未完成，待续...
+* 当前已完成，参数详情请看文档，欢迎提交bug...
 
 ***
 ## 前言
@@ -17,9 +17,9 @@
   * 向量模型
   * Batch API
   * 模型微调
-  * 文件管理
-    * 文件上传
-    * 查询文件列表
+  * 知识管理
+    * 知识库管理
+    * 文件管理
 
 ***
 
@@ -50,7 +50,7 @@ func example() {
 	expireAtTime := int64(1719803252) // token 过期时间
 	mssage := itcwc.PostParams{
 		Model: "glm-3-turbo",
-		Message: []itcwc.Messages{
+		Messages: []itcwc.Message{
 			{
 				Role:    "user",    // 消息的角色信息 详见文档
 				Content: "content", // 消息内容
