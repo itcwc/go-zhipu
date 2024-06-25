@@ -13,24 +13,24 @@ var v4url string = "https://open.bigmodel.cn/api/paas/v4/"
 var v3url string = "https://open.bigmodel.cn/api/paas/v3/"
 
 type PostParams struct {
-	Model       string      `json:"model"`
-	Messages    []Message   `json:"messages"`
-	RequestId   string      `json:"request_id"`
-	DoSample    bool        `json:"do_sample"`
-	Stream      bool        `json:"stream"`
-	Temperature float64     `json:"temperature"`
-	TopP        float64     `json:"top_p"`
-	Maxtokens   int         `json:"max_tokens"`
-	Stop        interface{} `json:"stop"`
-	Tools       Tool        `json:"tools"`
-	ToolChoice  string      `json:"tool_choice"`
-	UserId      string      `json:"user_id"`
+	Model       string       `json:"model"`
+	Messages    []Message    `json:"messages"`
+	RequestId   *string      `json:"request_id"`
+	DoSample    *bool        `json:"do_sample"`
+	Stream      *bool        `json:"stream"`
+	Temperature *float64     `json:"temperature"`
+	TopP        *float64     `json:"top_p"`
+	Maxtokens   *int         `json:"max_tokens"`
+	Stop        *interface{} `json:"stop"`
+	Tools       *Tool        `json:"tools"`
+	ToolChoice  *string      `json:"tool_choice"`
+	UserId      *string      `json:"user_id"`
 }
 type Message struct {
-	Role       string    `json:"role"`
-	Content    string    `json:"content"`
-	ToolCalls  ToolCalls `json:"tool_calls"`
-	ToolCallId string    `json:"tool_call_id"`
+	Role       string     `json:"role"`
+	Content    string     `json:"content"`
+	ToolCalls  *ToolCalls `json:"tool_calls"`
+	ToolCallId *string    `json:"tool_call_id"`
 }
 
 type Tool struct {
@@ -60,15 +60,13 @@ type WebSearch struct {
 	SearchResult bool   `json:"search_result"`
 }
 
-type ToolCalls struct {
-	Id       string           `json:"id"`
-	Type     string           `json:"type"`
-	Function ToolCallFunction `json:"function"`
-}
-
-type ToolCallFunction struct {
-	Name      string `json:"name"`
-	Arguments string `json:"arguments"`
+type ToolCalls []struct {
+	Id       string `json:"id"`
+	Type     string `json:"type"`
+	Function struct {
+		Name      string `json:"name"`
+		Arguments string `json:"arguments"`
+	} `json:"function"`
 }
 
 // 通用模型
@@ -79,8 +77,6 @@ func BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string) (ma
 	// 示例用法
 	apiURL := v4url + "chat/completions"
 	timeout := 60 * time.Second
-
-	postParams.Stream = false
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
