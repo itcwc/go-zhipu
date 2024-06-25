@@ -238,18 +238,63 @@ func ModelFineTuning(expireAtTime int64, postParams PostFineTuningParams, apiKey
 	return postResponse, nil
 }
 
+// 知识库管理栏目
+
 type PostKnowledgeParams struct {
+	KnowledgeId int    `json:"knowledge_id"`
 	EmbeddingId int    `json:"embedding_id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	Page        int    `json:"page"`
+	Size        int    `json:"size"`
 }
 
-// 知识库管理
+// 创建知识库POST 编辑知识库PUT 检索知识库列表GET 删除知识库DELETE
 func Knowledge(expireAtTime int64, postParams PostKnowledgeParams, apiKey string, model string) (map[string]interface{}, error) {
 	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
+	apiURL := v4url + "knowledge/"
+	timeout := 60 * time.Second
+
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
+	if err != nil {
+		return nil, fmt.Errorf("创建请求失败: %v", err)
+	}
+	return postResponse, nil
+}
+
+// 知识库使用量查询
+func QueryKnowledgeUsage(expireAtTime int64, apiKey string, model string) (map[string]interface{}, error) {
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+
 	// 示例用法
-	apiURL := v4url + "knowledge"
+	apiURL := v4url + "knowledge/capacity"
+	timeout := 60 * time.Second
+
+	// 示例 POST 请求
+	postResponse, err := utils.Post(apiURL, token, nil, timeout)
+	if err != nil {
+		return nil, fmt.Errorf("创建请求失败: %v", err)
+	}
+	return postResponse, nil
+}
+
+// 文件管理栏目
+// 文件上传from 编辑知识库文件PUT 查询文件列表GET 删除知识库文件DELETE
+type PostFileParams struct {
+	File            *multipart.FileHeader `json:"file"`
+	Purpose         string                `json:"purpose"`
+	CustomSeparator interface{}           `json:"custom_separator"`
+	SentenceSize    int                   `json:"sentence_size"`
+	KnowledgeId     string                `json:"knowledge_id"`
+}
+
+func FileManagement(expireAtTime int64, postParams PostFileParams, apiKey string, model string) (map[string]interface{}, error) {
+
+	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+
+	// 示例用法
+	apiURL := v4url + "files"
 	timeout := 60 * time.Second
 
 	// 示例 POST 请求
@@ -260,17 +305,8 @@ func Knowledge(expireAtTime int64, postParams PostKnowledgeParams, apiKey string
 	return postResponse, nil
 }
 
-type PostFileParams struct {
-	File            *multipart.FileHeader `json:"file"`
-	Purpose         string                `json:"purpose"`
-	CustomSeparator interface{}           `json:"custom_separator"`
-	SentenceSize    int                   `json:"sentence_size"`
-	KnowledgeId     string                `json:"knowledge_id"`
-}
-
-// 文件管理
-func FileManagement(expireAtTime int64, postParams PostFileParams, apiKey string, model string) (map[string]interface{}, error) {
-
+// 查询知识库文件详情
+func QueryKnowledgeFile(expireAtTime int64, postParams PostFileParams, apiKey string, model string) (map[string]interface{}, error) {
 	token, _ := utils.GenerateToken(apiKey, expireAtTime)
 
 	// 示例用法

@@ -60,42 +60,7 @@ func Post(apiURL, token string, params interface{}, timeout time.Duration) (map[
 	return nil, fmt.Errorf("意外响应状态码: %d", resp.StatusCode)
 }
 
-func Stream(apiURL, token string, params interface{}, timeout time.Duration) (*http.Response, error) {
-	// 将请求参数转换为 JSON 格式
-	jsonParams, err := json.Marshal(params)
-	if err != nil {
-		return nil, err
-	}
-
-	// 创建 POST 请求对象
-	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(jsonParams))
-	if err != nil {
-		return nil, err
-	}
-
-	// 设置请求头部信息
-	req.Header.Set("Authorization", token)
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
-
-	// 创建具有指定超时时间的 HTTP 客户端
-	client := http.Client{Timeout: timeout}
-
-	// 发送请求
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("发送请求失败: %v", err)
-	}
-
-	// 检查响应状态码是否为 200
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("意外响应状态码: %s", resp.Status)
-	}
-
-	return resp, nil
-}
-
-func Get(apiURL, token string, timeout time.Duration) (map[string]interface{}, error) {
+func Get(apiURL, token string, params interface{}, timeout time.Duration) (map[string]interface{}, error) {
 	// 创建一个具有指定超时时间的 HTTP 客户端
 	client := http.Client{Timeout: timeout}
 
