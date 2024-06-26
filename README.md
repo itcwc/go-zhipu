@@ -58,7 +58,6 @@
     * 知识库使用量查询
   * 文件管理
     * 文件上传
-    * 知识库响应示例
     * 编辑知识库文件
     * 查询文件列表
     * 删除知识库文件
@@ -124,48 +123,96 @@ func Example() {
 * 通用模型
 
     ```go
-      go-zhipu.model_api.BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string)
+    // sse调用
+    go-zhipu.model_api.BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string)
+    // 异步调用
+    go-zhipu.model_api.ModelAsynchronousCall(expireAtTime int64, postParams PostParams, apiKey string)
+    // 任务结果查询
+    go-zhipu.model_api.ModelTaskResultQuery(expireAtTime int64, id int, apiKey string)
     ```
 
 * 图像大模型
 
   ```go
-    go-zhipu.model_api.ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model string)
+  go-zhipu.model_api.ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model string, userId string)
   ```
 
 * 超拟人大模型
 
   ```go
-    go-zhipu.model_api.SuperhumanoidModel(expireAtTime int64, postParams PostSuperhumanoidParams, apiKey string)
+  // 同步调用
+  go-zhipu.model_api.SuperhumanoidModel(expireAtTime int64, postParams PostSuperhumanoidParams, apiKey string)
+  // 异步调用
+  go-zhipu.model_api.SHMAsyncCall(expireAtTime int64, postParams PostSuperhumanoidParams, apiKey string)
   ```
 
 * 向量模型
 
   ```go
-    go-zhipu.model_api.VectorModel(expireAtTime int64, input string, apiKey string, model string)
+  go-zhipu.model_api.VectorModel(expireAtTime int64, input string, apiKey string, model string)
   ```
 
 * Batch API
 
   ```go
-    go-zhipu.model_api.BatchAPI(expireAtTime int64, postParams PostBatchParams, apiKey string)
+  // 创建 Batch
+  go-zhipu.model_api.BatchAPICreate(expireAtTime int64, postParams PostBatchParams, apiKey string)
+  // 检索 Batch
+  go-zhipu.model_api.BatchSearch(expireAtTime int64, batchId int, apiKey string)
+  // 取消 Batch
+  go-zhipu.model_api.BatchCancel(expireAtTime int64, batchId int, apiKey string)
+  // 列出 Batch
+  go-zhipu.model_api.BatchList(expireAtTime int64, after string, limit int, apiKey string)
+  // 下载 Batch 结果
+  go-zhipu.model_api.BatchDownload(expireAtTime int64, fileId int, apiKey string)
   ```
 
 * 模型微调
 
   ```go
-    go-zhipu.model_api.ModelFineTuning(expireAtTime int64, trainingFile string, apiKey string, model string)
+  // 创建微调任务
+  go-zhipu.model_api.CreateModelFineTuning(expireAtTime int64, trainingFile string, apiKey string, model string)
+  // 查询微调任务事件
+  go-zhipu.model_api.QueryModelFineTuningEvent(expireAtTime int64, jobId int, after string, limit int, apiKey string)
+  // 查询微调任务
+  go-zhipu.model_api.QueryModelFineTuning(expireAtTime int64, jobId int, after string, limit int, apiKey string)
+  // 查询个人微调任务
+  go-zhipu.model_api.QueryPersonalModelFineTuning(expireAtTime int64, after string, limit int, apiKey string)
+  // 删除微调任务
+  go-zhipu.model_api.DeleteModelFineTuning(expireAtTime int64, jobId int, apiKey string)
+  // 取消微调任务
+  go-zhipu.model_api.CancelModelFineTuning(expireAtTime int64, jobId int, apiKey string)
+  // 删除微调模型
+  go-zhipu.model_api.DeleteModelFineTuningModel(expireAtTime int64, fineTunedModel string, apiKey string)
   ```
 
 * 知识管理
   * 知识库管理
 
     ```go
-      go-zhipu.model_api.Knowledge(expireAtTime int64, postParams PostKnowledgeParams, apiKey string, model string)
+    // 创建知识库
+    go-zhipu.model_api.Knowledge(expireAtTime int64, postParams PostKnowledgeParams, apiKey string, model string)
+    // 编辑知识库
+    go-zhipu.model_api.EditKnowledge(expireAtTime int64, postParams PostKnowledgeItemParams, apiKey string)
+    // 检索知识库列表
+    go-zhipu.model_api.QueryKnowledgeList(expireAtTime int64, page int, size int, apiKey string)
+    // 删除知识库
+    go-zhipu.model_api.DeleteKnowledge(expireAtTime int64, knowledgeId string, apiKey string)
+    // 知识库使用量查询
+    go-zhipu.model_api.KnowledgeUsage(expireAtTime int64, apiKey string)
     ```
 
   * 文件管理
 
     ```go
-      go-zhipu.model_api.FileManagement(expireAtTime int64, purpose string, apiKey string, model string, file *FileHeader)
+    // 文件管理
+    go-zhipu.model_api.FileManagement(expireAtTime int64, purpose string, apiKey string, model string, file *FileHeader)
+    // 编辑知识库文件
+    go-zhipu.model_api.EditKnowledgeFile(expireAtTime int64, postParams KnowledgeFileParams, apiKey string)
+    // 查询文件列表
+    go-zhipu.model_api.QueryFileList(expireAtTime int64, postParams QueryFileListParams, apiKey string)
+    // 删除知识库文件
+    go-zhipu.model_api.DeleteKnowledgeFile(expireAtTime int64, id string, apiKey string)
+    // 查询知识库文件详情
+    go-zhipu.model_api.QueryKnowledgeFileDetail(expireAtTime int64, id string, apiKey string)
     ```
