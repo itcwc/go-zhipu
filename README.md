@@ -1,13 +1,14 @@
 # go-zhipu
 
-* 新版本内容未完成，谨慎使用~
+* 新版内容已更新完毕，参数详情请看[官方文档](https://maas.aminer.cn/dev/api)，欢迎提交bug~
+* 首次写第三方扩展，有代码问题还请见谅。
 
 ***
 
 ## 前言
 
-* go智谱清言api
-* 详情见官方文档：<https://maas.aminer.cn/dev/api>
+* go-智谱清言（go-zhipu）是基于 go 语言开发的智谱清言 API 接口包，主要用于智谱清言模型的调用，支持通用模型、图像大模型、超拟人大模型、向量模型、Batch API、模型微调、知识管理等功能。
+* 详情见官方文档：[智谱清言官方文档](https://maas.aminer.cn/dev/api)
   
 ***
 
@@ -118,7 +119,7 @@ func Example() {
 
 ***
 
-## 其他
+## 其他模型调用
 
 * 通用模型
 
@@ -216,3 +217,7 @@ func Example() {
     // 查询知识库文件详情
     go-zhipu.model_api.QueryKnowledgeFileDetail(expireAtTime int64, id string, apiKey string)
     ```
+
+## 联系我
+
+* 邮箱：<it_cwc@qq.com>
