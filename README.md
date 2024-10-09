@@ -217,6 +217,14 @@ func Example() {
     // 查询知识库文件详情
     go-zhipu.model_api.QueryKnowledgeFileDetail(expireAtTime int64, id string, apiKey string)
     ```
+    
+## 👨‍💻‍ 软件贡献者
+
+<a href="https://github.com/itcwc/go-zhipu/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=itcwc/go-zhipu" />
+</a>
+  
+由 [contrib.rocks](https://contrib.rocks) 自动生成。
 
 ## 联系我
 
