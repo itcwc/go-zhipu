@@ -77,15 +77,17 @@ type WebSearch struct {
 	SearchResult *bool   `json:"search_result,omitempty"`
 }
 
-// 通用模型 sse调用
-func BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string) (map[string]interface{}, error) {
-
+// BeCommonModel 通用模型 sse调用
+func BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string, timeout ...time.Duration) (map[string]interface{}, error) {
+	var t time.Duration
+	if len(timeout) > 0 {
+		t = timeout[0]
+	} else {
+		t = 60 * time.Second
+	}
 	token, _ := utils.GenerateToken(apiKey, expireAtTime)
-
 	apiURL := v4url + "chat/completions"
-	timeout := 60 * time.Second
-
-	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
+	postResponse, err := utils.Post(apiURL, token, postParams, t)
 	if err != nil {
 		return nil, fmt.Errorf("创建请求失败: %v", err)
 	}
