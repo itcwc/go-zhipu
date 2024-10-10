@@ -24,7 +24,7 @@ type PostParams struct {
 	TopP        *float64     `json:"top_p,omitempty"`
 	Maxtokens   *int         `json:"max_tokens,omitempty"`
 	Stop        *interface{} `json:"stop,omitempty"`
-	Tools       *Tool        `json:"tools,omitempty"`
+	Tools       []Tool       `json:"tools,omitempty"`
 	ToolChoice  *string      `json:"tool_choice,omitempty"`
 	UserId      *string      `json:"user_id,omitempty"`
 }
@@ -45,14 +45,16 @@ type ToolCalls []struct {
 }
 
 type Tool struct {
-	Type     string `json:"type"`
-	Function struct {
-		Name        string    `json:"name"`
-		Description string    `json:"arguments"`
-		Parameters  Parameter `json:"parameters,omitempty"`
-	} `json:"function"`
-	Retrieval Retrieval `json:"retrieval,omitempty"`
-	WebSearch WebSearch `json:"web_search,omitempty"`
+	Type      string        `json:"type"`
+	Function  *ToolFunction `json:"function,omitempty"`
+	Retrieval *Retrieval    `json:"retrieval,omitempty"`
+	WebSearch *WebSearch    `json:"web_search,omitempty"`
+}
+
+type ToolFunction struct {
+	Name        string    `json:"name"`
+	Description string    `json:"arguments"`
+	Parameters  Parameter `json:"parameters,omitempty"`
 }
 
 type Parameter struct {
