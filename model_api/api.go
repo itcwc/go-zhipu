@@ -74,7 +74,7 @@ type Retrieval struct {
 	PromptTemplate *string `json:"prompt_template,omitempty"`
 }
 type WebSearch struct {
-	Enable       *string `json:"enable,omitempty"`
+	Enable       *bool   `json:"enable,omitempty"`
 	SearchQuery  *string `json:"search_query,omitempty"`
 	SearchResult *bool   `json:"search_result,omitempty"`
 }
