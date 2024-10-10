@@ -80,16 +80,12 @@ type WebSearch struct {
 }
 
 // BeCommonModel 通用模型 sse调用
-func BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string, timeout ...time.Duration) (map[string]interface{}, error) {
-	var t time.Duration
-	if len(timeout) > 0 {
-		t = timeout[0]
-	} else {
-		t = 60 * time.Second
-	}
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func BeCommonModel(postParams PostParams, token string, time ...time.Duration) (map[string]interface{}, error) {
+
+	timeout := utils.GetTimeout(time...)
+
 	apiURL := v4url + "chat/completions"
-	postResponse, err := utils.Post(apiURL, token, postParams, t)
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
 		return nil, fmt.Errorf("创建请求失败: %v", err)
 	}
@@ -97,11 +93,11 @@ func BeCommonModel(expireAtTime int64, postParams PostParams, apiKey string, tim
 }
 
 // 异步调用
-func ModelAsynchronousCall(expireAtTime int64, postParams PostParams, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func ModelAsynchronousCall(postParams PostParams, token string, time ...time.Duration) (map[string]interface{}, error) {
+
+	timeout := utils.GetTimeout(time...)
 
 	apiURL := v4url + "async/chat/completions"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -111,12 +107,10 @@ func ModelAsynchronousCall(expireAtTime int64, postParams PostParams, apiKey str
 }
 
 // 任务结果查询
-func ModelTaskResultQuery(expireAtTime int64, id int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func ModelTaskResultQuery(id int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	timeout := utils.GetTimeout(time...)
 
 	apiURL := v4url + "async-result/" + strconv.Itoa(id)
-	timeout := 60 * time.Second
-
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
 		return nil, fmt.Errorf("创建请求失败: %v", err)
@@ -131,12 +125,13 @@ type PostImageParams struct {
 }
 
 // 图像大模型
-func ImageLargeModel(expireAtTime int64, prompt string, apiKey string, model string, userId string) (map[string]interface{}, error) {
+func ImageLargeModel(prompt string, model string, userId string, token string, time ...time.Duration) (map[string]interface{}, error) {
 
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "images/generations"
-	timeout := 60 * time.Second
 
 	postParams := PostImageParams{
 		Model:  model,
@@ -172,12 +167,13 @@ type Meta struct {
 }
 
 // 超拟人大模型 同步调用
-func SuperhumanoidModel(expireAtTime int64, postParams PostSuperhumanoidParams, apiKey string) (map[string]interface{}, error) {
+func SuperhumanoidModel(postParams PostSuperhumanoidParams, token string, time ...time.Duration) (map[string]interface{}, error) {
 
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "chat/completions"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -187,11 +183,12 @@ func SuperhumanoidModel(expireAtTime int64, postParams PostSuperhumanoidParams, 
 }
 
 // 异步调用
-func SHMAsyncCall(expireAtTime int64, postParams PostSuperhumanoidParams, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func SHMAsyncCall(postParams PostSuperhumanoidParams, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "async/chat/completions"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -206,12 +203,13 @@ type PostVectorParams struct {
 }
 
 // 向量模型
-func VectorModel(expireAtTime int64, input string, apiKey string, model string) (map[string]interface{}, error) {
+func VectorModel(input string, model string, token string, time ...time.Duration) (map[string]interface{}, error) {
 
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "embeddings"
-	timeout := 60 * time.Second
 
 	postParams := PostVectorParams{
 		Input: input,
@@ -233,11 +231,12 @@ type PostBatchParams struct {
 }
 
 // Batch API 创建 Batch
-func BatchAPICreate(expireAtTime int64, postParams PostBatchParams, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func BatchAPICreate(postParams PostBatchParams, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "batches"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -247,11 +246,13 @@ func BatchAPICreate(expireAtTime int64, postParams PostBatchParams, apiKey strin
 }
 
 // 检索 Batch GET
-func BatchSearch(expireAtTime int64, batchId int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func BatchSearch(batchId int, token string, time ...time.Duration) (map[string]interface{}, error) {
+
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "batches/" + strconv.Itoa(batchId)
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
@@ -261,11 +262,12 @@ func BatchSearch(expireAtTime int64, batchId int, apiKey string) (map[string]int
 }
 
 // 取消 Batch POST
-func BatchCancel(expireAtTime int64, batchId int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func BatchCancel(batchId int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "batches/" + strconv.Itoa(batchId) + "/cancel"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Post(apiURL, token, nil, timeout)
 	if err != nil {
@@ -275,11 +277,12 @@ func BatchCancel(expireAtTime int64, batchId int, apiKey string) (map[string]int
 }
 
 // 列出 Batch GET
-func BatchList(expireAtTime int64, after string, limit int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func BatchList(after string, limit int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "batches?after=" + after + "&limit=" + strconv.Itoa(limit)
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
@@ -289,11 +292,12 @@ func BatchList(expireAtTime int64, after string, limit int, apiKey string) (map[
 }
 
 // 下载 Batch 结果 GET
-func BatchDownload(expireAtTime int64, fileId int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func BatchDownload(fileId int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "files/" + strconv.Itoa(fileId) + "/content"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
@@ -318,12 +322,35 @@ type Hyperparameter struct {
 }
 
 // 模型微调 创建微调任务
-func CreateModelFineTuning(expireAtTime int64, postParams PostFineTuningParams, apiKey string) (map[string]interface{}, error) {
+func CreateModelFineTuning(postParams PostFineTuningParams, token string, time ...time.Duration) (map[string]interface{}, error) {
 
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "fine_tuning/jobs"
-	timeout := 60 * time.Second
+
+	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
+	if err != nil {
+		return nil, fmt.Errorf("创建请求失败: %v", err)
+	}
+	return postResponse, nil
+}
+
+type PostSearchParams struct {
+	ToolType  string    `json:"tool_type"`
+	Messages  []Message `json:"messages"`
+	RequestId *string   `json:"request_id"`
+	Stream    *bool     `json:"stream"`
+}
+
+// 搜索工具
+func SearchTool(postParams PostSearchParams, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
+
+	apiURL := v4url + "tools"
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -333,11 +360,12 @@ func CreateModelFineTuning(expireAtTime int64, postParams PostFineTuningParams, 
 }
 
 // 查询微调任务事件 GET
-func QueryModelFineTuningEvent(expireAtTime int64, jobId int, after string, limit int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func QueryModelFineTuningEvent(jobId int, after string, limit int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "fine_tuning/jobs/" + strconv.Itoa(jobId) + "/events?limit=" + strconv.Itoa(limit) + "&after=" + after
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
@@ -347,11 +375,12 @@ func QueryModelFineTuningEvent(expireAtTime int64, jobId int, after string, limi
 }
 
 // 查询微调任务 GET
-func QueryModelFineTuning(expireAtTime int64, jobId int, after string, limit int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func QueryModelFineTuning(jobId int, after string, limit int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "fine_tuning/jobs/" + strconv.Itoa(jobId) + "/events?limit=" + strconv.Itoa(limit) + "&after=" + after
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
@@ -361,11 +390,12 @@ func QueryModelFineTuning(expireAtTime int64, jobId int, after string, limit int
 }
 
 // 查询个人微调任务 GET
-func QueryPersonalModelFineTuning(expireAtTime int64, after string, limit int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func QueryPersonalModelFineTuning(after string, limit int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "fine_tuning/jobs/?limit=" + strconv.Itoa(limit) + "&after=" + after
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
@@ -375,11 +405,12 @@ func QueryPersonalModelFineTuning(expireAtTime int64, after string, limit int, a
 }
 
 // 删除微调任务 DELETE
-func DeleteModelFineTuning(expireAtTime int64, jobId int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func DeleteModelFineTuning(jobId int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "fine_tuning/jobs/" + strconv.Itoa(jobId)
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Delete(apiURL, token, timeout)
 	if err != nil {
@@ -389,11 +420,12 @@ func DeleteModelFineTuning(expireAtTime int64, jobId int, apiKey string) (map[st
 }
 
 // 取消微调任务 POST
-func CancelModelFineTuning(expireAtTime int64, jobId int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func CancelModelFineTuning(jobId int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "fine_tuning/jobs" + strconv.Itoa(jobId) + "/cancel"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Post(apiURL, token, nil, timeout)
 	if err != nil {
@@ -403,11 +435,12 @@ func CancelModelFineTuning(expireAtTime int64, jobId int, apiKey string) (map[st
 }
 
 // 删除微调模型 DELETE
-func DeleteModelFineTuningModel(expireAtTime int64, fineTunedModel string, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func DeleteModelFineTuningModel(fineTunedModel string, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "fine_tuning/fine_tuned_models/" + fineTunedModel
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Delete(apiURL, token, timeout)
 	if err != nil {
@@ -423,11 +456,12 @@ type PostKnowledgeParams struct {
 }
 
 // 知识库管理 创建知识库 POST
-func Knowledge(expireAtTime int64, postParams PostKnowledgeParams, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func Knowledge(postParams PostKnowledgeParams, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "knowledge"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -444,11 +478,12 @@ type PostKnowledgeItemParams struct {
 }
 
 // 编辑知识库 PUT
-func EditKnowledge(expireAtTime int64, postParams PostKnowledgeItemParams, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func EditKnowledge(postParams PostKnowledgeItemParams, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "knowledge/" + postParams.KnowledgeId
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Put(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -458,11 +493,12 @@ func EditKnowledge(expireAtTime int64, postParams PostKnowledgeItemParams, apiKe
 }
 
 // 检索知识库列表 GET
-func QueryKnowledgeList(expireAtTime int64, page int, size int, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func QueryKnowledgeList(page int, size int, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "knowledge?page=" + strconv.Itoa(page) + "&size=" + strconv.Itoa(size)
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
@@ -472,11 +508,12 @@ func QueryKnowledgeList(expireAtTime int64, page int, size int, apiKey string) (
 }
 
 // 删除知识库 DELETE
-func DeleteKnowledge(expireAtTime int64, knowledgeId string, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func DeleteKnowledge(knowledgeId string, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "knowledge/" + knowledgeId
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Delete(apiURL, token, timeout)
 	if err != nil {
@@ -486,11 +523,12 @@ func DeleteKnowledge(expireAtTime int64, knowledgeId string, apiKey string) (map
 }
 
 // 知识库使用量查询 GET
-func KnowledgeUsage(expireAtTime int64, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func KnowledgeUsage(apiKey string, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "knowledge/capacity"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
@@ -505,12 +543,13 @@ type PostFileParams struct {
 }
 
 // 文件管理 文件上传
-func FileManagement(expireAtTime int64, postParams PostFileParams, apiKey string) (map[string]interface{}, error) {
+func FileManagement(postParams PostFileParams, token string, time ...time.Duration) (map[string]interface{}, error) {
 
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "files"
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Post(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -527,11 +566,12 @@ type KnowledgeFileParams struct {
 }
 
 // 编辑知识库文件 PUT
-func EditKnowledgeFile(expireAtTime int64, postParams KnowledgeFileParams, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func EditKnowledgeFile(postParams KnowledgeFileParams, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "document/" + strconv.Itoa(postParams.KnowledgeType)
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Put(apiURL, token, postParams, timeout)
 	if err != nil {
@@ -550,8 +590,10 @@ type QueryFileListParams struct {
 }
 
 // 查询文件列表 GET
-func QueryFileList(expireAtTime int64, postParams QueryFileListParams, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func QueryFileList(postParams QueryFileListParams, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	// 将postParams转换为url.Values以便附加到URL
 	params := url.Values{}
@@ -576,7 +618,6 @@ func QueryFileList(expireAtTime int64, postParams QueryFileListParams, apiKey st
 
 	// 将查询参数附加到URL
 	apiURL := fmt.Sprintf("%s/files?%s", v4url, params.Encode())
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
@@ -586,11 +627,12 @@ func QueryFileList(expireAtTime int64, postParams QueryFileListParams, apiKey st
 }
 
 // 删除知识库文件 DELETE
-func DeleteKnowledgeFile(expireAtTime int64, id string, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func DeleteKnowledgeFile(id string, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "document/" + id
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Delete(apiURL, token, timeout)
 	if err != nil {
@@ -600,11 +642,12 @@ func DeleteKnowledgeFile(expireAtTime int64, id string, apiKey string) (map[stri
 }
 
 // 查询知识库文件详情 GET
-func QueryKnowledgeFileDetail(expireAtTime int64, id string, apiKey string) (map[string]interface{}, error) {
-	token, _ := utils.GenerateToken(apiKey, expireAtTime)
+func QueryKnowledgeFileDetail(id string, token string, time ...time.Duration) (map[string]interface{}, error) {
+	// token, _ := utils.GenerateToken(apiKey, expireAtTime)
+	timeout := utils.GetTimeout(time...)
+	// timeout := 60 * time.Second
 
 	apiURL := v4url + "document/" + id
-	timeout := 60 * time.Second
 
 	postResponse, err := utils.Get(apiURL, token, timeout)
 	if err != nil {
