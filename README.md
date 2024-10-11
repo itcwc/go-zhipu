@@ -1,3 +1,10 @@
+# 重要！官方sdk已发布
+
+* [Go SDK安装地址：https://github.com/yankeguo/zhipu](https://github.com/yankeguo/zhipu)
+* [其他SDK：https://maas.aminer.cn/dev/api/libraries](https://maas.aminer.cn/dev/api/libraries)
+
+本人始终推荐您使用官方SDK！！！
+
 # go-zhipu
 
 * 新版内容已更新完毕，参数详情请看[官方文档](https://maas.aminer.cn/dev/api)，欢迎提交bug~
