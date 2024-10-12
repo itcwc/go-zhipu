@@ -127,7 +127,7 @@ func Example() {
 
   var t time.Duration = 60 // 请求等待时间 可不填 默认60秒
 
-  postResponse, err := zhipu.BeCommonModel(expireAtTime, mssage, apiKey, token, t)
+  postResponse, err := zhipu.BeCommonModel( mssage, token, t)
   if err != nil {
     fmt.Println(err)
     return
